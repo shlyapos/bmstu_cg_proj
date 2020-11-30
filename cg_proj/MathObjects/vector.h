@@ -29,6 +29,9 @@ public:
     const Vector operator -(const Vector& v) const;
     const Vector operator *(const double src) const;
 
+    Vector cross(Vector v);
+    double crossScalar(Vector v);
+
 private:
     double x;
     double y;

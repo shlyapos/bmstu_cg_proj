@@ -100,3 +100,19 @@ const Vector Vector::operator *(const double value) const
 
     return Vector(tmpX, tmpY, tmpZ);
 }
+
+Vector Vector::cross(Vector v)
+{
+    Vector result;
+
+    result.x = this->y * v.z - this->z * v.y;
+    result.y = this->z * v.x - this->x * v.z;
+    result.z = this->x * v.y - this->y * v.x;
+
+    return result;
+}
+
+double Vector::crossScalar(Vector v)
+{
+    return (this->x * v.x + this->y * v.y + this->z * v.z);
+}

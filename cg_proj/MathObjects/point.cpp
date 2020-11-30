@@ -1,9 +1,15 @@
 #include "point.h"
 
 // Constructors
-Point::Point() : x(0), y(0), z(0) {}
+Point::Point() : x(0), y(0), z(0)
+{
 
-Point::Point(double newX, double newY, double newZ) : x(newX), y(newY), z(newZ) {}
+}
+
+Point::Point(double newX, double newY, double newZ) : x(newX), y(newY), z(newZ)
+{
+
+}
 
 Point::Point(const Point& pnt)
 {
