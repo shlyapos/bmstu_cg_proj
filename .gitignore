@@ -2,6 +2,10 @@
 *.o
 *.exe
 
+## for 3d models (delet later!!!!)
+*.obj
+*.mtl
+
 ### QtCreator ###
 # A listing of all the files included in the project
 *.files
