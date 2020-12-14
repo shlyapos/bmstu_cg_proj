@@ -13,34 +13,33 @@ template<class t>
 class Vector3
 {
 public:
-    t x, y, z;
-    t w = 1;
+    t x, y, z, w;
 
     Vector3<t>();
-    Vector3<t>(t x, t y, t z);
-    Vector3<t>(Matrix m);
-    Vector3<t>(const Vector3<t>& v);
+    Vector3<t>(t, t, t, t w = 1);
+    Vector3<t>(Matrix);
+    //Vector3<t>(const Vector3<t>&);
 
-    template<class u> Vector3<t>(const Vector3<u>& v);
+    template<class u> Vector3<t>(const Vector3<u>&);
 
 
     // Operators
-    Vector3<t>& operator =(const Vector3<t>& v);
-    Vector3<t>  operator +(const Vector3<t>& v) const;
-    Vector3<t>  operator -(const Vector3<t>& v) const;
-    t           operator *(const Vector3<t>& v) const;
+    Vector3<t>& operator =(const Vector3<t>&);
+    Vector3<t>  operator +(const Vector3<t>&) const;
+    Vector3<t>  operator -(const Vector3<t>&) const;
+    t           operator *(const Vector3<t>&) const;
 
 
     // Other interesting operators
-    Vector3<t>  operator ^(const Vector3<t>& v) const;
-    Vector3<t>  operator *(float f) const;
-    t&          operator[](const int i);
+    Vector3<t>  operator ^(const Vector3<t>&) const;
+    Vector3<t>  operator *(const float&) const;
+    t&          operator[](const int&);
 
 
     // Other methods
     float norm() const;
     Vector3<t>& normalize(t l = 1);
-    void transform(const std::shared_ptr<Matrix> matrix);
+    void transform(const std::shared_ptr<Matrix>);
 };
 
 
@@ -48,8 +47,8 @@ using Vector3i = Vector3<int>;
 using Vector3f = Vector3<float>;
 
 
-template <> template <> Vector3<int>::Vector3(const Vector3<float> &v);
-template <> template <> Vector3<float>::Vector3(const Vector3<int> &v);
+template <> template <> Vector3<int>::Vector3(const Vector3<float>&);
+template <> template <> Vector3<float>::Vector3(const Vector3<int>&);
 
 #include "matrix.h"
 

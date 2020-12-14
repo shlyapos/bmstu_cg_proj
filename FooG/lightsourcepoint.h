@@ -8,18 +8,18 @@
 
 class LightSourcePoint
 {
-public:
-    LightSourcePoint(float i, Vector3f p);
+private:
+    Vector3f position;
+    float power;
 
-    Vector3f getPosition();
-    void setPosition(Vector3f v);
+public:
+    LightSourcePoint(const Vector3f&, const float& power = 1000);
+
+    Vector3f& getPosition();
+    void      setPosition(const Vector3f&);
 
     float getIntensity();
-
-private:
-    float i;
-
-    Vector3f position;
+    void  setIntensity(const float&);
 };
 
 #endif // LIGHTSOURCEPOINT_H

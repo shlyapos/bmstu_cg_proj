@@ -15,28 +15,40 @@
 class Model
 {
 private:
+    Vector3f center;
     std::vector<Vector3f> verts;
-    // attention, this Vec3i means vertex/uv/normal
+
+    // attention, this Vector3i means vertex/uv/normal
     std::vector<std::vector<Vector3i>> faces;
     std::vector<Vector3f> norms;
 
     QColor color;
 
 public:
-    Model(const char *filename, QColor& color);
-    ~Model();
+    Model(const char*, const QColor&, const Vector3f& center = Vector3f(0, 0, 0));
 
+    // Center
+    Vector3f& getCenter();
+    void      setCenter(const Vector3f&);
+
+    // Vertes
     int getVertsCount();
+    Vector3f& vert(const int&);
+
+    // Faces
     int getFacesCount();
+    std::vector<int> face(const int&);
 
-    QColor getColor();
+    // Normals
+    int getNormsCount();
+    Vector3f& norm(const int&, const int&);
 
-    void scale(float k);
-    void doScale();
+    // Color
+    QColor& getColor();
+    void    setColor(const QColor&);
 
-    Vector3f vert(int index);
-    std::vector<int> face(int index);
-    Vector3f norm(int iface, int nvert);
+    //void scale(float k);
+    //void doScale();
 };
 
 #endif // MODEL_H

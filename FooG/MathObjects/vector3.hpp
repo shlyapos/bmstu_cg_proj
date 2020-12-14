@@ -5,30 +5,30 @@
 
 // Constructors
 template<class t>
-Vector3<t>::Vector3() : x(t()), y(t()), z(t())
+Vector3<t>::Vector3() : x(t()), y(t()), z(t()), w(1)
 {
 
 }
 
 template<class t>
-Vector3<t>::Vector3(t x, t y, t z) : x(x), y(y), z(z)
+Vector3<t>::Vector3(t x, t y, t z, t w) : x(x), y(y), z(z), w(w)
 {
 
 }
 
 template<class t>
-Vector3<t>::Vector3(Matrix m)
+Vector3<t>::Vector3(Matrix m) : x(m[0][0] / m[3][0]), y(m[1][0] / m[3][0]), z(m[2][0] / m[3][0]), w(1)
 {
-    this->x = m[0][0] / m[3][0];
-    this->y = m[1][0] / m[3][0];
-    this->z = m[2][0] / m[3][0];
+
 }
 
+/*
 template<class t>
 Vector3<t>::Vector3(const Vector3<t>& v)
 {
     *this = v;
 }
+*/
 
 
 
@@ -41,6 +41,7 @@ Vector3<t>& Vector3<t>::operator =(const Vector3<t>& v)
         x = v.x;
         y = v.y;
         z = v.z;
+        w = v.w;
     }
     return *this;
 }
@@ -75,20 +76,22 @@ Vector3<t>  Vector3<t>::operator ^(const Vector3<t>& v) const
 }
 
 template<class t>
-Vector3<t>  Vector3<t>::operator *(float f) const
+Vector3<t>  Vector3<t>::operator *(const float& f) const
 {
     return Vector3<t>(x * f, y * f, z * f);
 }
 
 template<class t>
-t&          Vector3<t>::operator[](const int i)
+t&          Vector3<t>::operator[](const int& idx)
 {
-    if (i <= 0)
+    if (idx <= 0)
         return x;
-    else if (i == 1)
+    else if (idx == 1)
         return y;
-    else
+    else if (idx == 2)
         return z;
+    else
+        return w;
 }
 
 

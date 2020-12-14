@@ -4,36 +4,40 @@
 #include "model.h"
 #include "camera.h"
 #include "lightsourcepoint.h"
-#include "MathObjects/transformmatrix.h"
 
 class Scene
 {
+private:
+    Camera mainCamera;
+    std::vector<Model> models;
+    std::vector<LightSourcePoint> lightSources;
+
 public:
     Scene();
 
-    void addModel(Model newModel);
-    Model& getModel(int index);
+    // Models
+    void   addModel(const Model&);
+    Model& getModel(const int&);
+    int    countModels();
 
-    void addLightPoint(float i, Vector3f lp);
-    LightSourcePoint& getLightPoint(int idx);
-    size_t getLightsCount();
+    // Lights
+    void              addLightSource(const Vector3f&, const float&);
+    LightSourcePoint& getLightSource(const int&);
+    int               getLightSourceCount();
 
-    Camera& getCamera()
-    {
-        return this->mainCamera;
-    };
+    // Camera
+    //Camera& getCamera();
+    Camera&   getCamera();
+    void      setCamera(const Vector3f&, const Vector3f&, const Vector3f&);
 
-    void cameraTurn(Vector3f v);
-    void cameraMove(Vector3f v);
+    Vector3f& getCameraPos();
+    Vector3f& getCameraView();
+    Vector3f& getCameraUp();
 
-    int size();
-
-private:
-    std::vector<Model> models;
-    Camera mainCamera;
-
-    std::vector<LightSourcePoint> lightPoint;
-
+    void      upDownCamera(const float&);
+    void      rotateCamera(const float&);
+    void      strafeCamera(const float&);
+    void      movingCamera(const float&);
 };
 
 #endif // SCENE_H

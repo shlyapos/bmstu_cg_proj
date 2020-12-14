@@ -5,59 +5,67 @@
 #include <QGraphicsScene>
 
 #include <cmath>
-#include "MathObjects/matrix.h"
 
 #include "zbuffer.h"
 #include "scene.h"
 
+// Very thicc boi...
 class Drawer : public QGraphicsScene
 {
     Q_OBJECT
 
-public:
-    explicit Drawer(QObject *parent = nullptr);
-    ~Drawer();
-
-    void initZBuffer(int width, int height);
-    void initImage(QImage image);
-
-    void drawScene();
-
-    void cameraTurn(Vector3f v);
-    void cameraMove(Vector3f v);
-
-    QColor getBGColor();
-
 private:
-    // ********************
-    Vector3f center = Vector3f(0, 0, 0);
-    Vector3f eye = Vector3f(1,1,3);
+    int w, h;
 
-    Matrix viewport(int x, int y, int w, int h);
-    void lookat(Vector3f eye, Vector3f center, Vector3f up);
-    // ********************
-
-    int w;
-    int h;
-
-    ZBuffer zbuffer;
+    // Scene
     Scene scene;
 
-    std::vector<std::vector<QColor>> colorCache;
-    QImage image;
-
-    void triangleProcessing(Vector3i t0, Vector3i t1, Vector3i t2, QColor col, float i0, float i1, float i2);
-    void drawObjects(Model& model);
-
-    Vector3f getProjection(const Vector3f& vert);
-    float getIntensity(const Vector3f& vert, Vector3f norm);
-
-    void fillFromCache();
-    void clearScene();
-    void clearColorCache();
-    void clearZbuffer();
-
     QColor bgColor = QColor(50, 50, 50);
+
+    // Screen
+    QImage canvas;
+
+    void initCanvas();
+    void clearCanvas();
+    void updateCanvas();
+
+    // Z-Buffer
+    ZBuffer zBuffer;
+
+    void initZBuffer();
+    void clearZBuffer();
+
+    // Color cache
+    std::vector<std::vector<QColor>> colorCache;
+
+    void initColorCache();
+    void clearColorCache();
+
+    // Screen
+    void updateScreen();
+    void clearScreen();
+
+
+    // Draw processing
+    void  objectProcessing(Model&, Vector3f&, Vector3f&, Vector3f&);
+    float lightProcessing(const Vector3f&, const Vector3f&);
+    void  triangleProcessing(Vector3i&, Vector3i&, Vector3i&,
+                            const QColor&, float&, float&, float&);
+
+    Matrix viewport(const int&, const int&, const int&, const int&);
+
+public:
+    explicit Drawer(const int&, const int&, QObject *parent = nullptr);
+    ~Drawer();
+
+    void draw();
+
+    void upDownCamera(const float&);
+    void rotateCamera(const float&);
+    void strafeCamera(const float&);
+    void movingCamera(const float&);
 };
+
+inline QRgb iColor(const QRgb& a, const float& i);
 
 #endif // DRAWER_H

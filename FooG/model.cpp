@@ -1,6 +1,7 @@
 #include "model.h"
 
-Model::Model(const char *filename, QColor& color)
+Model::Model(const char *filename, const QColor& color, const Vector3f& center)
+    : center(center), color(color)
 {
     std::ifstream in;
 
@@ -55,52 +56,66 @@ Model::Model(const char *filename, QColor& color)
             faces.push_back(f);
         }
     }
-    std::cerr << "# v#" << verts.size() << " f# " << faces.size() << std::endl;
 
-    this->color = color;
-    doScale();
+    //std::cerr << "# v#" << verts.size() << " f# " << faces.size() << std::endl;
+
+    //doScale();
 }
 
-Model::~Model()
+
+
+// Center
+Vector3f& Model::getCenter()
 {
-
+    return center;
 }
 
-
-
-int Model::getVertsCount()
+void      Model::setCenter(const Vector3f& newCenter)
 {
-    return this->verts.size();
+    center = newCenter;
 }
 
-int Model::getFacesCount()
+
+
+// Vertes
+int       Model::getVertsCount()
 {
-    return this->faces.size();
+    return verts.size();
 }
 
-QColor Model::getColor()
+Vector3f& Model::vert(const int& index)
 {
-    return this->color;
+    return verts[index];
 }
 
 
 
-Vector3f Model::vert(int index)
+// Faces
+int              Model::getFacesCount()
 {
-    return this->verts[index];
+    return faces.size();
 }
 
-std::vector<int> Model::face(int index)
+std::vector<int> Model::face(const int& idx)
 {
     std::vector<int> face;
+    size_t size = faces[idx].size();
 
-    for (int i = 0; i < (int)faces[index].size(); i++)
-        face.push_back(faces[index][i][0]);
+    for (size_t i = 0; i < size; i++)
+        face.push_back(faces[idx][i][0]);
 
     return face;
 }
 
-Vector3f Model::norm(int iface, int nvert)
+
+
+// Normals
+int       Model::getNormsCount()
+{
+    return norms.size();
+}
+
+Vector3f& Model::norm(const int& iface, const int& nvert)
 {
     int idx = faces[iface][nvert][2];
     return norms[idx].normalize();
@@ -108,8 +123,28 @@ Vector3f Model::norm(int iface, int nvert)
 
 
 
+// Color
+QColor& Model::getColor()
+{
+    return color;
+}
+
+void    Model::setColor(const QColor& newColor)
+{
+    color = newColor;
+}
 
 
+
+
+
+
+
+
+
+
+
+/*
 void Model::scale(float k)
 {
     int nverts = verts.size();
@@ -124,14 +159,12 @@ void Model::scale(float k)
 
 void Model::doScale()
 {
-    float k = 0.3;
+    float k = 1;
     int nverts = verts.size();
 
     for (int i = 0; i < nverts; i++)
     {
-        if (verts[i].x > 1 || verts[i].y > 1 || verts[i].z > 1)
-        {
-            scale(k);
-        }
+        scale(k);
     }
 }
+*/

@@ -2,65 +2,103 @@
 
 #include <QDebug>
 
+#define EPS 1e-6
+
+// Constructors
 Scene::Scene()
+    : mainCamera(Camera()), models(std::vector<Model>()), lightSources(std::vector<LightSourcePoint>())
 {
 
 }
 
-int Scene::size()
+
+
+// Models
+void   Scene::addModel(const Model& newModel)
 {
-    return this->models.size();
+    models.push_back(newModel);
 }
 
-void Scene::addModel(Model newModel)
+Model& Scene::getModel(const int& idx)
 {
-    this->models.push_back(newModel);
+    return models[idx];
 }
 
-Model& Scene::getModel(int index)
+int    Scene::countModels()
 {
-    return this->models[index];
-}
-
-
-void Scene::addLightPoint(float i, Vector3f lp)
-{
-    LightSourcePoint newLp(i, lp);
-    this->lightPoint.push_back(newLp);
-}
-
-LightSourcePoint& Scene::getLightPoint(int idx)
-{
-    return this->lightPoint[idx];
-}
-
-size_t Scene::getLightsCount()
-{
-    return this->lightPoint.size();
+    return models.size();
 }
 
 
-void Scene::cameraTurn(Vector3f v)
+
+// Lights
+void Scene::addLightSource(const Vector3f& lPos, const float& lPower)
 {
-    this->mainCamera.turn(v);
+    lightSources.push_back(LightSourcePoint(lPos, lPower));
 }
 
-void Scene::cameraMove(Vector3f v)
+LightSourcePoint& Scene::getLightSource(const int& idx)
 {
-    Vector3f position = this->mainCamera.getPosition();
-    Vector3f direction = this->mainCamera.getDirection();
+    return lightSources[idx];
+}
 
-    std::shared_ptr<Matrix> r1(new RotateOxMatrix(-direction.x * M_PI / 180));
-    position.transform(r1);
+int Scene::getLightSourceCount()
+{
+    return lightSources.size();
+}
 
-    std::shared_ptr<Matrix> r2(new RotateOxMatrix(-direction.y * M_PI / 180));
-    position.transform(r2);
 
-//    std::shared_ptr<Matrix> r3(new RotateOxMatrix(-direction.z * M_PI / 180));
-//    position.transform(r3);
 
-    this->mainCamera.setPosition(position);
-    this->mainCamera.move(v);
+// Camera methods
+Camera&   Scene::getCamera()
+{
+    return mainCamera;
+}
 
-    qDebug() << this->mainCamera.getPosition().x << this->mainCamera.getPosition().y << this->mainCamera.getPosition().z;
+void      Scene::setCamera(const Vector3f& pos, const Vector3f& view, const Vector3f& up)
+{
+    mainCamera = Camera(pos, view, up);
+}
+
+
+
+Vector3f& Scene::getCameraPos()
+{
+    return mainCamera.getPosition();
+}
+
+Vector3f& Scene::getCameraView()
+{
+    return mainCamera.getView();
+}
+
+Vector3f& Scene::getCameraUp()
+{
+    return mainCamera.getUp();
+}
+
+
+
+void    Scene::upDownCamera(const float& speed)
+{
+    Vector3f pos = mainCamera.getPosition();
+
+    if (abs(1.25 - pos.y) > EPS || abs(-1.25 + pos.y) > EPS)
+        mainCamera.upDown(speed);
+}
+
+void    Scene::rotateCamera(const float& speed)
+{
+    mainCamera.rotateView(speed);
+}
+
+void    Scene::strafeCamera(const float& speed)
+{
+    mainCamera.update();
+    mainCamera.strafe(speed);
+}
+
+void    Scene::movingCamera(const float& speed)
+{
+    mainCamera.move(speed);
 }

@@ -14,6 +14,7 @@ SOURCES += \
     MathObjects/vector2.cpp \
     MathObjects/vector3.cpp \
     camera.cpp \
+    cameranew.cpp \
     drawer.cpp \
     lightsourcepoint.cpp \
     main.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     MathObjects/vector3.h \
     MathObjects/vector3.hpp \
     camera.h \
+    cameranew.h \
     drawer.h \
     lightsourcepoint.h \
     mainwindow.h \

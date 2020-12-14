@@ -1,27 +1,33 @@
 #include "lightsourcepoint.h"
 
-LightSourcePoint::LightSourcePoint(float i, Vector3f p)
+// Constructors
+LightSourcePoint::LightSourcePoint(const Vector3f& pos, const float& p) : position(pos), power(p)
 {
-    // Bug light position
-    p.y *= -1;
-
-    this->i = i;
-    this->position = p;
+    position.y *= -1;
 }
 
 
-Vector3f LightSourcePoint::getPosition()
+
+// Position methods
+Vector3f& LightSourcePoint::getPosition()
 {
-    return this->position;
+    return position;
 }
 
-void LightSourcePoint::setPosition(Vector3f v)
+void      LightSourcePoint::setPosition(const Vector3f& newPos)
 {
-    this->position = v;
+    position = newPos;
 }
 
 
+
+// Intensity methods
 float LightSourcePoint::getIntensity()
 {
-    return this->i;
+    return power;
+}
+
+void  LightSourcePoint::setIntensity(const float& newPower)
+{
+    power = newPower;
 }

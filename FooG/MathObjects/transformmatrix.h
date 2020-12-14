@@ -5,29 +5,30 @@
 
 #include <math.h>
 
+
 class MoveMatrix : public Matrix
 {
 public:
-    MoveMatrix(int x, int y, int z);
+    MoveMatrix(int, int, int);
 };
 
 
 class RotateOxMatrix : public Matrix
 {
 public:
-    RotateOxMatrix(double angle);
+    RotateOxMatrix(double);
 };
 
 class RotateOyMatrix : public Matrix
 {
 public:
-    RotateOyMatrix(double angle);
+    RotateOyMatrix(double);
 };
 
 class RotateOzMatrix : public Matrix
 {
 public:
-    RotateOzMatrix(double angle);
+    RotateOzMatrix(double);
 };
 
 #endif // TRANSFORMMATRIX_H

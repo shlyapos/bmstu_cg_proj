@@ -1,5 +1,5 @@
 #include "transformmatrix.h"
-
+/*
 MoveMatrix::MoveMatrix(int x, int y, int z)
 {
     this->m[0][0] = 1;
@@ -42,7 +42,8 @@ RotateOzMatrix::RotateOzMatrix(double angle)
     this->m[2][2] = 1;
     this->m[3][3] = 1;
 }
-/*
+*/
+
 MoveMatrix::MoveMatrix(int x, int y, int z)
 {
     this->data[0][0] = 1;
@@ -85,4 +86,3 @@ RotateOzMatrix::RotateOzMatrix(double angle)
     this->data[2][2] = 1;
     this->data[3][3] = 1;
 }
-*/

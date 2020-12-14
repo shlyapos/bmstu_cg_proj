@@ -1,33 +1,27 @@
 #ifndef ZBUFFER_H
 #define ZBUFFER_H
 
-#include <QColor>
-
 #include <limits>
 #include <vector>
 
 class ZBuffer
 {
+private:
+    int w, h;
+    std::vector<std::vector<int>> data;
+    int background = std::numeric_limits<int>::min();
+
 public:
     ZBuffer();
-    ZBuffer(int width, int height);
-
-    void clearZBuffer();
-    void fillColors();
+    ZBuffer(const int&, const int&);
 
     int width();
     int height();
 
-    void setDepth(int x, int y, int value);
-    int getDepth(int x, int y);
+    void clearZBuffer();
 
-private:
-    int w;
-    int h;
-
-    std::vector<std::vector<int>> data;
-
-    int background = std::numeric_limits<int>::min();
+    void setDepth(const int&, const int&, const int&);
+    int  getDepth(const int&, const int&);
 };
 
 #endif // ZBUFFER_H

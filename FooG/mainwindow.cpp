@@ -13,24 +13,16 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::initDrawer()
 {
-    int width = ui->graphicsView->width();
-    int height = ui->graphicsView->height();
+    size_t w = ui->graphicsView->width();
+    size_t h = ui->graphicsView->height();
 
-    drawer = new Drawer(this);
+    drawer = new Drawer(w, h, this);
 
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setAlignment(Qt::AlignCenter);
 
-    QImage tempImage = QImage(width, height, QImage::Format_RGB32);
-    tempImage.fill(drawer->getBGColor());
-
-    drawer->initZBuffer(width, height);
-    drawer->initImage(tempImage);
-
     ui->graphicsView->setScene(drawer);
-
-    drawer->addPixmap(QPixmap::fromImage(tempImage));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -40,39 +32,41 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (key)
     {
     case Qt::Key_Space:
-        drawer->drawScene();
+        drawer->draw();
         break;
+
     case Qt::Key_W:
-        drawer->cameraMove(Vector3f(0, 0, 50));
-        drawer->drawScene();
+        drawer->movingCamera(1);
+        drawer->draw();
         break;
     case Qt::Key_S:
-        drawer->cameraMove(Vector3f(0, 0, -50));
-        drawer->drawScene();
+        drawer->movingCamera(-1);
+        drawer->draw();
         break;
     case Qt::Key_A:
-        drawer->cameraMove(Vector3f(-50, 0, 0));
-        drawer->drawScene();
+        drawer->strafeCamera(-0.5);
+        drawer->draw();
         break;
     case Qt::Key_D:
-        drawer->cameraMove(Vector3f(50, 0, 0));
-        drawer->drawScene();
+        drawer->strafeCamera(0.5);
+        drawer->draw();
         break;
+
     case Qt::Key_I:
-        drawer->cameraTurn(Vector3f(0.1, 0, 0));
-        drawer->drawScene();
+        drawer->upDownCamera(-0.25);
+        drawer->draw();
         break;
     case Qt::Key_J:
-        drawer->cameraTurn(Vector3f(0, -0.1, 0));
-        drawer->drawScene();
+        drawer->rotateCamera(-0.05);
+        drawer->draw();
         break;
     case Qt::Key_K:
-        drawer->cameraTurn(Vector3f(-0.1, 0, 0));
-        drawer->drawScene();
+        drawer->upDownCamera(0.25);
+        drawer->draw();
         break;
     case Qt::Key_L:
-        drawer->cameraTurn(Vector3f(0, 0.1, 0));
-        drawer->drawScene();
+        drawer->rotateCamera(0.05);
+        drawer->draw();
         break;
     }
 }
