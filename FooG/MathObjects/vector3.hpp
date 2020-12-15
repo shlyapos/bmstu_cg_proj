@@ -22,14 +22,6 @@ Vector3<t>::Vector3(Matrix m) : x(m[0][0] / m[3][0]), y(m[1][0] / m[3][0]), z(m[
 
 }
 
-/*
-template<class t>
-Vector3<t>::Vector3(const Vector3<t>& v)
-{
-    *this = v;
-}
-*/
-
 
 
 // Operators

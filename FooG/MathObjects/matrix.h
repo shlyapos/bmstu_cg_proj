@@ -7,28 +7,6 @@
 
 #include "vector3.h"
 
-/*
-class Matrix {
-protected:
-    std::vector<std::vector<float> > m;
-    int rows, cols;
-public:
-    Matrix(int r=4, int c=4);
-    Matrix(Vector3f v);
-    int nrows();
-    int ncols();
-    static Matrix identity(int dimensions);
-    std::vector<float>& operator[](const int i);
-    Matrix operator*(const Matrix& a);
-    Matrix transpose();
-    Matrix inverse();
-
-    float get(const int&, const int&);
-    void fill(const float&);
-    //friend std::ostream& operator<<(std::ostream& s, Matrix& m);
-};
-*/
-
 class Matrix
 {
 protected:

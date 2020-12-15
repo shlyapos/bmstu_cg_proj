@@ -18,7 +18,6 @@ public:
     Vector3<t>();
     Vector3<t>(t, t, t, t w = 1);
     Vector3<t>(Matrix);
-    //Vector3<t>(const Vector3<t>&);
 
     template<class u> Vector3<t>(const Vector3<u>&);
 

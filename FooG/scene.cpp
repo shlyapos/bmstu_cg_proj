@@ -14,9 +14,10 @@ Scene::Scene()
 
 
 // Models
-void   Scene::addModel(const Model& newModel)
+void   Scene::addModel(const Model& newModel, const Vector3f& scale)
 {
     models.push_back(newModel);
+    models.back().scale(scale);
 }
 
 Model& Scene::getModel(const int& idx)
@@ -83,7 +84,7 @@ void    Scene::upDownCamera(const float& speed)
 {
     Vector3f pos = mainCamera.getPosition();
 
-    if (abs(1.25 - pos.y) > EPS || abs(-1.25 + pos.y) > EPS)
+    if (fabs(pos.y + speed) < 1.25)
         mainCamera.upDown(speed);
 }
 

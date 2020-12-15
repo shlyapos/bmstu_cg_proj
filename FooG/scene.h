@@ -16,7 +16,7 @@ public:
     Scene();
 
     // Models
-    void   addModel(const Model&);
+    void   addModel(const Model&, const Vector3f& scale = Vector3f(1, 1, 1));
     Model& getModel(const int&);
     int    countModels();
 

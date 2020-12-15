@@ -13,6 +13,8 @@ SOURCES += \
     MathObjects/transformmatrix.cpp \
     MathObjects/vector2.cpp \
     MathObjects/vector3.cpp \
+    addlightwindow.cpp \
+    addmodelwindow.cpp \
     camera.cpp \
     cameranew.cpp \
     drawer.cpp \
@@ -29,6 +31,8 @@ HEADERS += \
     MathObjects/vector2.h \
     MathObjects/vector3.h \
     MathObjects/vector3.hpp \
+    addlightwindow.h \
+    addmodelwindow.h \
     camera.h \
     cameranew.h \
     drawer.h \
@@ -40,6 +44,8 @@ HEADERS += \
     zbuffer.h
 
 FORMS += \
+    addlightwindow.ui \
+    addmodelwindow.ui \
     mainwindow.ui
 
 # Default rules for deployment.

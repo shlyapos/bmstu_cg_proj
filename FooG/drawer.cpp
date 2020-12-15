@@ -41,11 +41,7 @@ Drawer::Drawer(const int& w, const int& h, QObject *parent)
     initColorCache();
     initZBuffer();
 
-    scene.setCamera(Vector3f(0, 0, -10), Vector3f(0, 0, 0), Vector3f(0, 1, 0));
-    scene.addLightSource(Vector3f(0, -10, 0), 100);
-
-    scene.addModel(Model("cube.obj", Qt::red, Vector3f(10, 0, 0)));
-    scene.addModel(Model("cube.obj", Qt::red, Vector3f(8, 0, 0)));
+    scene.setCamera(Vector3f(0, 0, 1), Vector3f(0, 0, 0), Vector3f(0, 1, 0));
 
     updateCanvas();
     updateScreen();
@@ -78,6 +74,17 @@ void Drawer::draw()
 }
 
 
+void Drawer::addModel(Vector3f& center, Vector3f& scale, QString& filename, QColor& color)
+{
+    scene.addModel(Model(filename.toStdString().c_str(), color, center), scale);
+}
+
+void Drawer::addLight(const Vector3f& pos, const float& power)
+{
+    scene.addLightSource(pos, power);
+}
+
+
 // Camera
 void Drawer::upDownCamera(const float& speed)
 {
@@ -107,16 +114,15 @@ void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, 
 {
     size_t i, j;
 
-    size_t   faces  = model.getFacesCount();
-    Vector3f center = model.getCenter();
-    QColor   color  = model.getColor();
+    size_t faces = model.getFacesCount();
+    QColor color = model.getColor();
 
     //Transformation matrix (not sure how it works)
-    Matrix viewPort   = Camera::viewport(0, 0, w, h);
+    Matrix viewPort   = Camera::viewport(w/8, h/8, w*3/4, h*3/4);
     Matrix projection = Matrix::identity(4);
     Matrix modelView  = Camera::lookAt(camPos, camDir, camUp);
 
-    projection[3][2]  = - 1.f / (camPos - camDir).norm();
+    projection[3][2]  = - 1.1f / (camPos - camDir).norm();
 
     Matrix mvp = viewPort * projection * modelView;
 
@@ -125,15 +131,18 @@ void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, 
         std::vector<int> face = model.face(i);
 
         Vector3i screenCoords[3];
-        float    intensity[3];
+        float    intensity[3] = { BG_LIGHT, BG_LIGHT, BG_LIGHT };
 
         for (j = 0; j < 3; j++)
         {
-            Vector3f v = center + model.vert(face[j]);
+            Vector3f v = model.vert(face[j]);
 
             screenCoords[j] = Vector3f(mvp * Matrix(v));
             intensity[j] = lightProcessing(v, model.norm(i, j));
         }
+
+        if (screenCoords[0].z < camPos.z || screenCoords[1].z < camPos.z || screenCoords[2].z < camPos.z)
+            continue;
 
         triangleProcessing(screenCoords[0], screenCoords[1], screenCoords[2],
                 color, intensity[0], intensity[1], intensity[2]);
@@ -142,6 +151,7 @@ void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, 
 
 float Drawer::lightProcessing(const Vector3f& vert, const Vector3f& norm)
 {
+
     size_t lights = scene.getLightSourceCount();
     float intensity = 0;
 
@@ -160,6 +170,9 @@ float Drawer::lightProcessing(const Vector3f& vert, const Vector3f& norm)
         intensity = BG_LIGHT + intensity * (1 - BG_LIGHT);
     }
 
+    if (intensity == 0)
+        intensity = BG_LIGHT;
+
     return intensity;
 }
 
@@ -169,17 +182,17 @@ void Drawer::triangleProcessing(Vector3i& t0, Vector3i& t1, Vector3i& t2,
     if (t0.y == t1.y && t0.y == t2.y)
         return;
 
-    if (t0.y>t1.y)
+    if (t0.y > t1.y)
     {
         std::swap(t0, t1);
         std::swap(i0, i1);
     }
-    if (t0.y>t2.y)
+    if (t0.y > t2.y)
     {
         std::swap(t0, t2);
         std::swap(i0, i2);
     }
-    if (t1.y>t2.y)
+    if (t1.y > t2.y)
     {
         std::swap(t1, t2);
         std::swap(i1, i2);
@@ -206,9 +219,6 @@ void Drawer::triangleProcessing(Vector3i& t0, Vector3i& t1, Vector3i& t2,
             std::swap(A, B);
             std::swap(iA, iB);
         }
-
-        //if (A.x >= w || A.y >= h || A.x < 0 || A.y < 0) continue;
-        //if (B.x >= w || B.y >= h || B.x < 0 || B.y < 0) continue;
 
         A.x = std::max(A.x, 0);
         B.x = std::min(B.x, w);

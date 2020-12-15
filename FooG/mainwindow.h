@@ -7,6 +7,9 @@
 #include <QPixmap>
 #include <QKeyEvent>
 
+#include "addmodelwindow.h"
+#include "addlightwindow.h"
+
 #include "MathObjects/vector3.h"
 #include "drawer.h"
 
@@ -27,7 +30,21 @@ private:
     Drawer *drawer;
 
     void initDrawer();
+    void initButton();
 
     void keyPressEvent(QKeyEvent *event);
+
+    AddModelWindow *addModelWindow;
+    AddModelParameters addModelparams;
+
+    AddLightWindow *addLightWindow;
+    AddLightParameters addLightParams;
+
+private slots:
+    void openAddModelWindow();
+    void setAddModelParams(AddModelParameters&);
+
+    void openAddLightWindow();
+    void setAddLightParams(AddLightParameters&);
 };
 #endif // MAINWINDOW_H

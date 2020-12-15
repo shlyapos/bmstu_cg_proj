@@ -27,8 +27,9 @@ Model::Model(const char *filename, const QColor& color, const Vector3f& center)
             for (int i = 0; i < 3; i++)
                 iss >> v[i];
 
-            verts.push_back(v);
+            verts.push_back(center + v);
         }
+
         else if (!line.compare(0, 3, "vn "))
         {
             iss >> trash >> trash;
@@ -39,6 +40,7 @@ Model::Model(const char *filename, const QColor& color, const Vector3f& center)
 
             norms.push_back(n);
         }
+
         else if (!line.compare(0, 2, "f "))
         {
             std::vector<Vector3i> f;
@@ -56,10 +58,6 @@ Model::Model(const char *filename, const QColor& color, const Vector3f& center)
             faces.push_back(f);
         }
     }
-
-    //std::cerr << "# v#" << verts.size() << " f# " << faces.size() << std::endl;
-
-    //doScale();
 }
 
 
@@ -115,10 +113,36 @@ int       Model::getNormsCount()
     return norms.size();
 }
 
+void Model::setNorm(const int& iface, const int& nvert, const Vector3f& n)
+{
+    int idx = faces[iface][nvert][2];
+    norms[idx] = n;
+}
+
 Vector3f& Model::norm(const int& iface, const int& nvert)
 {
     int idx = faces[iface][nvert][2];
     return norms[idx].normalize();
+}
+
+Vector3f Model::normalCalculate(const Vector3f& a, const Vector3f& b, const Vector3f& c)
+{
+    Vector3f n = (c - a) ^ (b - a);
+    return n;
+}
+
+void Model::normalsProcessing()
+{
+    size_t nface = faces.size();
+
+    for (size_t i = 0; i < nface; i++)
+    {
+        std::vector<int> f = face(i);
+
+        setNorm(i, 0, normalCalculate(vert(f[0]), vert(f[1]), vert(f[2])));
+        setNorm(i, 1, normalCalculate(vert(f[1]), vert(f[2]), vert(f[0])));
+        setNorm(i, 2, normalCalculate(vert(f[2]), vert(f[0]), vert(f[1])));
+    }
 }
 
 
@@ -135,36 +159,17 @@ void    Model::setColor(const QColor& newColor)
 }
 
 
-
-
-
-
-
-
-
-
-
-/*
-void Model::scale(float k)
+void Model::scale(const Vector3f& k)
 {
     int nverts = verts.size();
 
     for (int i = 0; i < nverts; i++)
     {
-        verts[i].x *= k;
-        verts[i].y *= k;
-        verts[i].z *= k;
+        verts[i].x *= k.x;
+        verts[i].y *= k.y;
+        verts[i].z *= k.z;
     }
+
+    normalsProcessing();
 }
 
-void Model::doScale()
-{
-    float k = 1;
-    int nverts = verts.size();
-
-    for (int i = 0; i < nverts; i++)
-    {
-        scale(k);
-    }
-}
-*/

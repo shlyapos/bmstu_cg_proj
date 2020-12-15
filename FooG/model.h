@@ -24,6 +24,9 @@ private:
 
     QColor color;
 
+    Vector3f normalCalculate(const Vector3f&, const Vector3f&, const Vector3f&);
+    void normalsProcessing();
+
 public:
     Model(const char*, const QColor&, const Vector3f& center = Vector3f(0, 0, 0));
 
@@ -41,14 +44,14 @@ public:
 
     // Normals
     int getNormsCount();
+    void setNorm(const int&, const int&, const Vector3f&);
     Vector3f& norm(const int&, const int&);
 
     // Color
     QColor& getColor();
     void    setColor(const QColor&);
 
-    //void scale(float k);
-    //void doScale();
+    void scale(const Vector3f& k);
 };
 
 #endif // MODEL_H

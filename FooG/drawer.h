@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 
 #include <cmath>
+#include <string>
 
 #include "zbuffer.h"
 #include "scene.h"
@@ -59,6 +60,9 @@ public:
     ~Drawer();
 
     void draw();
+
+    void addModel(Vector3f&, Vector3f&, QString&, QColor&);
+    void addLight(const Vector3f&, const float&);
 
     void upDownCamera(const float&);
     void rotateCamera(const float&);
