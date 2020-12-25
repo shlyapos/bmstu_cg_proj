@@ -3,7 +3,6 @@
 *.exe
 
 ## for 3d models (delet later!!!!)
-*.obj
 *.mtl
 
 ### QtCreator ###
