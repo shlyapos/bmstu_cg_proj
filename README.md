@@ -5,15 +5,19 @@
 Bauman Moscow State Technical University
 ```
 
+# Реализация камеры от первого лица, по факту кривенькая основа для какого-нибудь шутана)))
+
 Использовались: z-buffer, закраска по Гуро и локальная модель освещения.
 
-# Полезные репозитории:
+# Источники вдохновения
+
+### Полезные репозитории:
 
 [WinterPuma, можно также в readme найти ссылку на dropbox c кучей проектов](https://github.com/Winterpuma/bmstu_CG_CP)
 
 [Kotyarich](https://github.com/Kotyarich/computer-graphic-project)
 
-# Полезные ссылки
+### Полезные ссылки:
 
 [Библиотека opengl](https://github.com/g-truc/glm/blob/0.9.5/glm/gtc/matrix_transform.inl#L208)
 
