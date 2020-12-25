@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "MathObjects/vector3.h"
-#include "MathObjects/vector3.hpp"
+#include "../MathObjects/vector3.h"
+#include "../MathObjects/vector3.hpp"
 
 #define DEPTH 255
 
@@ -17,6 +17,9 @@ private:
     Vector3f cross(const Vector3f&, const  Vector3f&, const Vector3f&);
     float magnitude(const Vector3f&);
     static Vector3f normalize(Vector3f&);
+
+    // For fix bug
+    int rotateCount = 0;
 
 public:
     // Constructors

@@ -5,14 +5,22 @@
 #include <QFileDialog>
 #include <QColorDialog>
 
+#include <cstdlib>
+
 struct AddModelParameters
 {
     float moveX, moveY, moveZ;
     float scaleX, scaleY, scaleZ;
 
     QString filename;
+    QString modelName;
 
     QColor color;
+
+    bool isSprite;
+
+    float enX, enY, enZ;
+    float speed;
 };
 
 namespace Ui {
@@ -24,14 +32,24 @@ class AddModelWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddModelWindow(QDialog *parent = nullptr);
+    explicit AddModelWindow(int, QDialog *parent = nullptr);
     ~AddModelWindow();
 
 private:
     Ui::AddModelWindow *ui;
     AddModelParameters params;
 
+    // For auto name
+    int modelCnt;
+    std::string name;
+
+    void initLabels();
+    void initLineEdits();
+    void initParams();
+
 private slots:
+    void isSpriteToggledCheckButton(bool);
+
     void openFileDialog();
     void chooseColor();
 

@@ -27,7 +27,7 @@ Model::Model(const char *filename, const QColor& color, const Vector3f& center)
             for (int i = 0; i < 3; i++)
                 iss >> v[i];
 
-            verts.push_back(center + v);
+            verts.push_back(v);
         }
 
         else if (!line.compare(0, 3, "vn "))
@@ -58,6 +58,8 @@ Model::Model(const char *filename, const QColor& color, const Vector3f& center)
             faces.push_back(f);
         }
     }
+    // For time tests
+    //std::cerr << "Verteces - " << verts.size() << std::endl;
 }
 
 
@@ -68,7 +70,7 @@ Vector3f& Model::getCenter()
     return center;
 }
 
-void      Model::setCenter(const Vector3f& newCenter)
+void Model::setCenter(const Vector3f& newCenter)
 {
     center = newCenter;
 }
@@ -76,20 +78,20 @@ void      Model::setCenter(const Vector3f& newCenter)
 
 
 // Vertes
-int       Model::getVertsCount()
+int Model::getVertsCount()
 {
     return verts.size();
 }
 
-Vector3f& Model::vert(const int& index)
+Vector3f& Model::vert(const int& idx)
 {
-    return verts[index];
+    return verts[idx];
 }
 
 
 
 // Faces
-int              Model::getFacesCount()
+int Model::getFacesCount()
 {
     return faces.size();
 }
@@ -108,7 +110,7 @@ std::vector<int> Model::face(const int& idx)
 
 
 // Normals
-int       Model::getNormsCount()
+int Model::getNormsCount()
 {
     return norms.size();
 }
@@ -153,10 +155,11 @@ QColor& Model::getColor()
     return color;
 }
 
-void    Model::setColor(const QColor& newColor)
+void Model::setColor(const QColor& newColor)
 {
     color = newColor;
 }
+
 
 
 void Model::scale(const Vector3f& k)
@@ -173,3 +176,26 @@ void Model::scale(const Vector3f& k)
     normalsProcessing();
 }
 
+
+void Model::rotate(const Vector3f& angle)
+{
+    std::shared_ptr<Matrix> m1(new MoveMatrix(-center.x, -center.y, -center.z));
+    std::shared_ptr<Matrix> m2(new MoveMatrix(center.x, center.y, center.z));
+
+    std::shared_ptr<Matrix> rx(new RotateOxMatrix(angle.x * M_PI / 180));
+    std::shared_ptr<Matrix> ry(new RotateOyMatrix(angle.y * M_PI / 180));
+    std::shared_ptr<Matrix> rz(new RotateOzMatrix(angle.z * M_PI / 180));
+
+    size_t nverts = verts.size();
+
+    for (size_t i = 0; i < nverts; i++)
+    {
+        verts[i].transform(m1);
+
+        verts[i].transform(rx);
+        verts[i].transform(ry);
+        verts[i].transform(rz);
+
+        verts[i].transform(m2);
+    }
+}

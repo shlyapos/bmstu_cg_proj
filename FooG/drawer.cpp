@@ -35,13 +35,14 @@ inline QRgb iColor(const QRgb& a, const float& i)
 
 // Public methods
 Drawer::Drawer(const int& w, const int& h, QObject *parent)
-    : QGraphicsScene(parent), w(w), h(h)
+    : QGraphicsScene(parent), w(w), h(h), wPerm(w + FAULT), hPerm(h + FAULT)
 {
     initCanvas();
     initColorCache();
     initZBuffer();
 
-    scene.setCamera(Vector3f(0, 0, 1), Vector3f(0, 0, 0), Vector3f(0, 1, 0));
+    scene.setCamera(Vector3f(0, 0, 4), Vector3f(0, 0, 0), Vector3f(0, 1, 0));
+    scene.addLightSource(Vector3f(100, 1000, 100), 1300);
 
     updateCanvas();
     updateScreen();
@@ -58,11 +59,20 @@ void Drawer::draw()
 {
     clearScreen();
 
-    size_t models = scene.countModels();
-
     Vector3f camPos = scene.getCameraPos();
     Vector3f camDir = scene.getCameraView();
     Vector3f camUp  = scene.getCameraUp();
+
+    size_t i;
+    size_t sprites = scene.countSprites();
+
+    for (i = 0; i < sprites; i++)
+    {
+        scene.updateSpriteCenter(i);
+        objectProcessing(scene.getSprite(i), camPos, camDir, camUp);
+    }
+
+    size_t models = scene.countModels();
 
     for (size_t i = 0; i < models; i++)
     {
@@ -74,15 +84,49 @@ void Drawer::draw()
 }
 
 
+// Model
 void Drawer::addModel(Vector3f& center, Vector3f& scale, QString& filename, QColor& color)
 {
     scene.addModel(Model(filename.toStdString().c_str(), color, center), scale);
 }
 
+void Drawer::editModel(const int& idx, Vector3f& center, Vector3f& scale, Vector3f& rotate)
+{
+    scene.editModel(idx, center, scale, rotate);
+}
+
+
+
+// Sprite
+void Drawer::addSprite(Vector3f& center, Vector3f& scale, QString& filename,
+                       QColor& color, Vector3f& end, float& speed)
+{
+    scene.addSprite(Sprite(filename.toStdString().c_str(), color, center), scale, end ,speed);
+}
+
+void Drawer::editSprite(const int& idx, Vector3f& cntr, Vector3f& scl, Vector3f& rt, Vector3f& end, const float& sp)
+{
+    scene.editSprite(idx, cntr, scl, rt, end, sp);
+}
+
+void Drawer::editSprite(const int& idx, Vector3f& cntr, Vector3f& scl, Vector3f& rt)
+{
+    scene.editSprite(idx, cntr, scl, rt);
+}
+
+
+
+// Light
 void Drawer::addLight(const Vector3f& pos, const float& power)
 {
     scene.addLightSource(pos, power);
 }
+
+void Drawer::editLight(const int& idx, const Vector3f& pos, const float& power)
+{
+    scene.editLight(idx, pos, power);
+}
+
 
 
 // Camera
@@ -113,21 +157,26 @@ void Drawer::movingCamera(const float& speed)
 void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, Vector3f& camUp)
 {
     size_t i, j;
+    bool skip;
+    float camZInc = fabs(camPos.z) + 1;
+    float camZDec = fabs(camPos.z) - 1;
 
-    size_t faces = model.getFacesCount();
-    QColor color = model.getColor();
+    Vector3f center = model.getCenter();
+    size_t faces    = model.getFacesCount();
+    QColor color    = model.getColor();
 
     //Transformation matrix (not sure how it works)
     Matrix viewPort   = Camera::viewport(w/8, h/8, w*3/4, h*3/4);
     Matrix projection = Matrix::identity(4);
     Matrix modelView  = Camera::lookAt(camPos, camDir, camUp);
 
-    projection[3][2]  = - 1.1f / (camPos - camDir).norm();
+    projection[3][2]  = - 1.f / (camPos - camDir).norm();
 
     Matrix mvp = viewPort * projection * modelView;
 
     for (i = 0; i < faces; i++)
     {
+        skip = false;
         std::vector<int> face = model.face(i);
 
         Vector3i screenCoords[3];
@@ -135,14 +184,21 @@ void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, 
 
         for (j = 0; j < 3; j++)
         {
-            Vector3f v = model.vert(face[j]);
+            Vector3f v = center + model.vert(face[j]);
+
+            if (v.z > camZDec && v.z > camZInc)
+            {
+                skip = true;
+                break;
+            }
 
             screenCoords[j] = Vector3f(mvp * Matrix(v));
             intensity[j] = lightProcessing(v, model.norm(i, j));
         }
 
-        if (screenCoords[0].z < camPos.z || screenCoords[1].z < camPos.z || screenCoords[2].z < camPos.z)
-            continue;
+        if (skip || !checkIsVisible(screenCoords[0]) ||
+                    !checkIsVisible(screenCoords[1]) ||
+                    !checkIsVisible(screenCoords[2])) continue;
 
         triangleProcessing(screenCoords[0], screenCoords[1], screenCoords[2],
                 color, intensity[0], intensity[1], intensity[2]);
@@ -151,12 +207,14 @@ void Drawer::objectProcessing(Model& model, Vector3f& camPos, Vector3f& camDir, 
 
 float Drawer::lightProcessing(const Vector3f& vert, const Vector3f& norm)
 {
+    float wholeIntensity = 0;
+    float intensity;
 
     size_t lights = scene.getLightSourceCount();
-    float intensity = 0;
 
     for (size_t i = 0; i < lights; i++)
     {
+        intensity = 0;
         LightSourcePoint lsp = scene.getLightSource(i);
 
         Vector3f lightDir = vert - lsp.getPosition();
@@ -168,12 +226,16 @@ float Drawer::lightProcessing(const Vector3f& vert, const Vector3f& norm)
         intensity = fmin(1.0, intensity);
 
         intensity = BG_LIGHT + intensity * (1 - BG_LIGHT);
+
+        wholeIntensity += intensity;
     }
 
-    if (intensity == 0)
-        intensity = BG_LIGHT;
+    if (wholeIntensity == 0)
+        wholeIntensity = BG_LIGHT;
+    else
+        wholeIntensity /= lights;
 
-    return intensity;
+    return wholeIntensity;
 }
 
 void Drawer::triangleProcessing(Vector3i& t0, Vector3i& t1, Vector3i& t2,
@@ -239,24 +301,13 @@ void Drawer::triangleProcessing(Vector3i& t0, Vector3i& t1, Vector3i& t2,
             }
         }
     }
-
-
 }
 
-
-Matrix Drawer::viewport(const int& x, const int& y, const int& w, const int& h)
+bool Drawer::checkIsVisible(const Vector3i& v)
 {
-    Matrix m = Matrix::identity(4);
-
-    m[0][3] = x + w / 2.0f;
-    m[1][3] = y + h / 2.0f;
-    m[2][3] = DEPTH / 2.0f;
-
-    m[0][0] = w / 2.0f;
-    m[1][1] = h / 2.0f;
-    m[2][2] = DEPTH / 2.0f;
-
-    return m;
+    if (v.x < -FAULT || v.x > wPerm || v.y < -FAULT || v.y > hPerm)
+        return false;
+    return true;
 }
 
 

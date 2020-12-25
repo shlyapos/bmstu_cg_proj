@@ -3,7 +3,7 @@
 // Constructors
 LightSourcePoint::LightSourcePoint(const Vector3f& pos, const float& p) : position(pos), power(p)
 {
-    position.y *= -1;
+
 }
 
 

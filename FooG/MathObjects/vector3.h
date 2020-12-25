@@ -6,6 +6,7 @@
 #include <vector>
 
 #define TO_RAD_180 180
+#define EPS 1e-6
 
 class Matrix;
 

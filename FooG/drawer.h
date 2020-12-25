@@ -10,6 +10,8 @@
 #include "zbuffer.h"
 #include "scene.h"
 
+#define FAULT 500
+
 // Very thicc boi...
 class Drawer : public QGraphicsScene
 {
@@ -21,7 +23,7 @@ private:
     // Scene
     Scene scene;
 
-    QColor bgColor = QColor(50, 50, 50);
+    QColor bgColor = QColor(94, 115, 107);
 
     // Screen
     QImage canvas;
@@ -53,7 +55,8 @@ private:
     void  triangleProcessing(Vector3i&, Vector3i&, Vector3i&,
                             const QColor&, float&, float&, float&);
 
-    Matrix viewport(const int&, const int&, const int&, const int&);
+    int  wPerm, hPerm;
+    bool checkIsVisible(const Vector3i&);
 
 public:
     explicit Drawer(const int&, const int&, QObject *parent = nullptr);
@@ -61,9 +64,20 @@ public:
 
     void draw();
 
+    // Model
     void addModel(Vector3f&, Vector3f&, QString&, QColor&);
-    void addLight(const Vector3f&, const float&);
+    void editModel(const int&, Vector3f&, Vector3f&, Vector3f&);
 
+    // Sprite
+    void addSprite(Vector3f&, Vector3f&, QString&, QColor&, Vector3f&, float&);
+    void editSprite(const int&, Vector3f&, Vector3f&, Vector3f&, Vector3f&, const float&);
+    void editSprite(const int&, Vector3f&, Vector3f&, Vector3f&);   // Without movement
+
+    // Light
+    void addLight(const Vector3f&, const float&);
+    void editLight(const int&, const Vector3f&, const float& power = 500);
+
+    // Camera
     void upDownCamera(const float&);
     void rotateCamera(const float&);
     void strafeCamera(const float&);

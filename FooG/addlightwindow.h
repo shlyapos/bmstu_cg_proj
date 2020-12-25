@@ -1,5 +1,5 @@
-#ifndef ADDLIGHTWINDOW_H
-#define ADDLIGHTWINDOW_H
+#ifndef SETLIGHTWINDOW_H
+#define SETLIGHTWINDOW_H
 
 #include <QDialog>
 
@@ -20,12 +20,15 @@ class AddLightWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddLightWindow(QWidget *parent = nullptr);
+    explicit AddLightWindow(int, QWidget *parent = nullptr);
     ~AddLightWindow();
 
 private:
     Ui::AddLightWindow *ui;
     AddLightParameters params;
+
+    int lightCnt;
+    std::string name;
 
 private slots:
     void okButton();

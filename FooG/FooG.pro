@@ -11,42 +11,39 @@ CONFIG += c++11
 SOURCES += \
     MathObjects/matrix.cpp \
     MathObjects/transformmatrix.cpp \
-    MathObjects/vector2.cpp \
     MathObjects/vector3.cpp \
+    SceneObjects/camera.cpp \
+    SceneObjects/lightsourcepoint.cpp \
+    SceneObjects/model.cpp \
+    SceneObjects/sprite.cpp \
     addlightwindow.cpp \
     addmodelwindow.cpp \
-    camera.cpp \
-    cameranew.cpp \
     drawer.cpp \
-    lightsourcepoint.cpp \
     main.cpp \
     mainwindow.cpp \
-    model.cpp \
     scene.cpp \
     zbuffer.cpp
 
 HEADERS += \
     MathObjects/matrix.h \
     MathObjects/transformmatrix.h \
-    MathObjects/vector2.h \
     MathObjects/vector3.h \
     MathObjects/vector3.hpp \
+    SceneObjects/camera.h \
+    SceneObjects/lightsourcepoint.h \
+    SceneObjects/model.h \
+    SceneObjects/sprite.h \
     addlightwindow.h \
     addmodelwindow.h \
-    camera.h \
-    cameranew.h \
     drawer.h \
-    lightsourcepoint.h \
     mainwindow.h \
-    model.h \
     scene.h \
-    vector2.h \
     zbuffer.h
 
 FORMS += \
-    addlightwindow.ui \
-    addmodelwindow.ui \
-    mainwindow.ui
+    UiForms/addlightwindow.ui \
+    UiForms/addmodelwindow.ui \
+    UiForms/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

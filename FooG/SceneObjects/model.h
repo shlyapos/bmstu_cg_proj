@@ -9,12 +9,14 @@
 
 #include <QColor>
 
-#include "MathObjects/vector3.h"
-#include "MathObjects/vector3.hpp"
+#include "../MathObjects/vector3.h"
+#include "../MathObjects/vector3.hpp"
+
+#include "../MathObjects/transformmatrix.h"
 
 class Model
 {
-private:
+protected:
     Vector3f center;
     std::vector<Vector3f> verts;
 
@@ -27,6 +29,8 @@ private:
     Vector3f normalCalculate(const Vector3f&, const Vector3f&, const Vector3f&);
     void normalsProcessing();
 
+    bool isSprite = false;
+
 public:
     Model(const char*, const QColor&, const Vector3f& center = Vector3f(0, 0, 0));
 
@@ -35,23 +39,24 @@ public:
     void      setCenter(const Vector3f&);
 
     // Vertes
-    int getVertsCount();
+    int       getVertsCount();
     Vector3f& vert(const int&);
 
     // Faces
-    int getFacesCount();
+    int              getFacesCount();
     std::vector<int> face(const int&);
 
     // Normals
-    int getNormsCount();
-    void setNorm(const int&, const int&, const Vector3f&);
+    int       getNormsCount();
+    void      setNorm(const int&, const int&, const Vector3f&);
     Vector3f& norm(const int&, const int&);
 
     // Color
     QColor& getColor();
     void    setColor(const QColor&);
 
-    void scale(const Vector3f& k);
+    void scale(const Vector3f&);
+    void rotate(const Vector3f&);
 };
 
 #endif // MODEL_H

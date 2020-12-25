@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include <QDebug>
+
 // Public methods
 // Constructors
 Camera::Camera()
@@ -57,9 +59,10 @@ Vector3f& Camera::getUp()
 // First person camera
 void Camera::rotateView(const float& speed)
 {
-    Vector3f vVector; // View vector
-
-    vVector = mView - mPos;
+    Vector3f vVector; // Полчим вектор взгляда
+    vVector.x = mView.x - mPos.x;
+    vVector.y = mView.y - mPos.y;
+    vVector.z = mView.z - mPos.z;
 
     mView.z = (float)(mPos.z + sin(speed) * vVector.x + cos(speed) * vVector.z);
     mView.x = (float)(mPos.x + cos(speed) * vVector.x - sin(speed) * vVector.z);
