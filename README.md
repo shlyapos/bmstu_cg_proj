@@ -5,11 +5,11 @@
 Bauman Moscow State Technical University
 ```
 
-# Реализация камеры от первого лица, по факту кривенькая основа для какого-нибудь шутана)))
+## Реализация камеры от первого лица, по факту кривенькая основа для какого-нибудь шутана)))
 
 Использовались: z-buffer, закраска по Гуро и локальная модель освещения.
 
-# Источники вдохновения
+## Источники вдохновения
 
 ### Полезные репозитории:
 
@@ -29,7 +29,7 @@ Bauman Moscow State Technical University
 
 [Матрицы в opengl](http://opengl-tutorial.blogspot.com/p/3.html)
 
-# Скриншоты
+## Скриншоты
 
 ![Бошка](https://github.com/shlyapos/bmstu_cg_proj/blob/master/Documents/ui_example0.png)
 
